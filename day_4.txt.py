@@ -34,11 +34,9 @@ with open('day_4.txt') as ifile:
 #              "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"]:
 #     result += get_card_value(line)
 
-for card in range(len(card_instances)):
-    original_card = card + 1
-    for next_card in range(card_matches[original_card]):
-        card_won = next_card + original_card + 1
-        card_instances[card_won] += card_instances[original_card]
+for card in range(1, len(card_instances) + 1):
+    for next_card in range(card_matches[card]):
+        card_instances[next_card + card + 1] += card_instances[card]
 
 card_counts = 0
 for card_count in card_instances.values():
