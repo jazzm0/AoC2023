@@ -1,8 +1,12 @@
 result = 0
+card_matches = {}
+card_instances = {}
 
 
 def get_card_value(s: str) -> int:
-    numbers = s.strip().split(":")[1].split("|")
+    s = s.strip().split(":")
+    card_number = int(s[0].replace("Card", "").strip())
+    numbers = s[1].split("|")
     winning_numbers, matches = set(), 0
     for winning_number in numbers[0].split(" "):
         if winning_number != "":
@@ -10,6 +14,8 @@ def get_card_value(s: str) -> int:
     for number in numbers[1].split(" "):
         if number.strip() in winning_numbers:
             matches += 1
+    card_matches[card_number] = matches
+    card_instances[card_number] = 1
     if matches > 0:
         return 2 ** (matches - 1)
     else:
@@ -28,4 +34,15 @@ with open('day_4.txt') as ifile:
 #              "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"]:
 #     result += get_card_value(line)
 
+for card in range(len(card_instances)):
+    original_card = card + 1
+    for next_card in range(card_matches[original_card]):
+        card_won = next_card + original_card + 1
+        card_instances[card_won] += card_instances[original_card]
+
+card_counts = 0
+for card_count in card_instances.values():
+    card_counts += card_count
+
 print(result)
+print(card_counts)
