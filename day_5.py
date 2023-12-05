@@ -1,29 +1,62 @@
+from bisect import bisect_left
+from typing import List
+
 seeds = []
+
 seed_soil = {}
+ss_keys = []
+
 soil_fertilizer = {}
+sf_keys = []
+
 fertilizer_water = {}
+fw_keys = []
+
 water_light = {}
+wl_keys = []
+
 light_temperature = {}
+lt_keys = []
+
 temperature_humidity = {}
+th_keys = []
+
 humidity_location = {}
+hl_keys = []
 
 ss, sf, fw, wl, lt, th, hl = False, False, False, False, False, False, False
 
 
-def add_entry(s: str, map: dict):
+def binary_search(keys: List[int], value: int) -> int:
+    return bisect_left(keys, value, 0, len(keys))
+
+
+def add_entry(s: str, map: dict, keys: List[int]):
     if not s[0].isdigit():
         return
     boundaries = s.split(" ")
     source = int(boundaries[1])
     destination = int(boundaries[0])
     offset = int(boundaries[2]) - 1
-    map[(source, source + offset)] = destination
+    map[source] = (offset, destination)
+    keys.append(source)
 
 
-def map_value(map: dict, value: int) -> int:
-    for k, v in map.items():
-        if k[0] <= value <= k[1]:
-            return value - k[0] + v
+def map_value(map: dict, keys: List[int], value: int) -> int:
+    possible_keys = []
+    index = binary_search(keys, value)
+
+    if 0 <= index < len(keys):
+        possible_keys.append(keys[index])
+    if index > 0:
+        possible_keys.append(keys[index - 1])
+    if index < len(keys) - 1:
+        possible_keys.append(keys[index + 1])
+
+    for key in possible_keys:
+        v = map[key]
+        if key <= value <= key + v[0]:
+            return value - key + v[1]
     return value
 
 
@@ -49,30 +82,37 @@ with open('day_5.txt') as ifile:
             hl = True
 
         if hl:
-            add_entry(line, humidity_location)
+            add_entry(line, humidity_location, hl_keys)
         elif th:
-            add_entry(line, temperature_humidity)
+            add_entry(line, temperature_humidity, th_keys)
         elif lt:
-            add_entry(line, light_temperature)
+            add_entry(line, light_temperature, lt_keys)
         elif wl:
-            add_entry(line, water_light)
+            add_entry(line, water_light, wl_keys)
         elif fw:
-            add_entry(line, fertilizer_water)
+            add_entry(line, fertilizer_water, fw_keys)
         elif sf:
-            add_entry(line, soil_fertilizer)
+            add_entry(line, soil_fertilizer, sf_keys)
         elif ss:
-            add_entry(line, seed_soil)
+            add_entry(line, seed_soil, ss_keys)
 
 locations = []
+ss_keys = sorted(ss_keys)
+sf_keys = sorted(sf_keys)
+fw_keys = sorted(fw_keys)
+wl_keys = sorted(wl_keys)
+lt_keys = sorted(lt_keys)
+th_keys = sorted(th_keys)
+hl_keys = sorted(hl_keys)
 
 for seed in seeds:
-    soil = map_value(seed_soil, seed)
-    fertilizer = map_value(soil_fertilizer, soil)
-    water = map_value(fertilizer_water, fertilizer)
-    light = map_value(water_light, water)
-    temperature = map_value(light_temperature, light)
-    humidity = map_value(temperature_humidity, temperature)
-    location = map_value(humidity_location, humidity)
+    soil = map_value(seed_soil, ss_keys, seed)
+    fertilizer = map_value(soil_fertilizer, sf_keys, soil)
+    water = map_value(fertilizer_water, fw_keys, fertilizer)
+    light = map_value(water_light, wl_keys, water)
+    temperature = map_value(light_temperature, lt_keys, light)
+    humidity = map_value(temperature_humidity, th_keys, temperature)
+    location = map_value(humidity_location, hl_keys, humidity)
     locations.append(location)
 
 print(sorted(locations))
