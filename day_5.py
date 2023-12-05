@@ -1,3 +1,4 @@
+import time
 from bisect import bisect_left
 from typing import List
 
@@ -116,3 +117,25 @@ for seed in seeds:
     locations.append(location)
 
 print(sorted(locations))
+min_location = None
+solutions_tried = 0  # 1624044411 roughly 1.6 * 10^9 solutions correct answer is 136096660
+started = time.time()
+
+for start in range(0, len(seeds), 2):
+    for seed in range(seeds[start], seeds[start] + seeds[start + 1]):
+        solutions_tried += 1
+        soil = map_value(seed_soil, ss_keys, seed)
+        fertilizer = map_value(soil_fertilizer, sf_keys, soil)
+        water = map_value(fertilizer_water, fw_keys, fertilizer)
+        light = map_value(water_light, wl_keys, water)
+        temperature = map_value(light_temperature, lt_keys, light)
+        humidity = map_value(temperature_humidity, th_keys, temperature)
+        location = map_value(humidity_location, hl_keys, humidity)
+        if min_location is None or min_location > location:
+            min_location = location
+
+        if solutions_tried % 10 ** 7 == 0:
+            print("solutions tried so far: " + str(solutions_tried) + " ,took " +
+                  str(time.time() - started) + " seconds")
+
+print(min_location)
