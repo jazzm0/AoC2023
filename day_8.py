@@ -38,11 +38,11 @@ next_nodes = starts
 multipliers = []
 
 while not found:
-    for index in range(len(instructions)):
+    for instruction in instructions:
         new_next_nodes = []
         all_end_nodes = True
         for node in next_nodes:
-            if instructions[index] == "L":
+            if instruction == "L":
                 next_node = nodes[node][0]
             else:
                 next_node = nodes[node][1]
