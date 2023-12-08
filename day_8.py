@@ -40,7 +40,6 @@ multipliers = []
 while not found:
     for instruction in instructions:
         new_next_nodes = []
-        all_end_nodes = True
         for node in next_nodes:
             if instruction == "L":
                 next_node = nodes[node][0]
@@ -52,8 +51,6 @@ while not found:
                     multipliers.append(steps + 1)
                 ends[next_node] = steps + 1
 
-            if all_end_nodes and next_node[2] != "Z":
-                all_end_nodes = False
         next_nodes = new_next_nodes
         steps += 1
         if len(ends) == len(starts):
