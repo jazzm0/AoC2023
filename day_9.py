@@ -21,7 +21,7 @@ with open('day_9.txt') as ifile:
             if n != "":
                 sequence.append(int(n))
         sequences.append(sequence)
-result = 0
+result, previous_sum = 0, 0
 for sequence in sequences:
     all_zeroes = False
     extrapolated_values = []
@@ -29,5 +29,10 @@ for sequence in sequences:
         extrapolated_values.append(sequence)
         result += sequence[- 1]
         sequence, all_zeroes = generate_next_sequence(sequence)
+    previous = 0
+    for i in range(len(extrapolated_values)):
+        previous = extrapolated_values[-(i + 1)][0] - previous
+    previous_sum += previous
 
 print(result)
+print(previous_sum)
