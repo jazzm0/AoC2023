@@ -21,9 +21,13 @@ with open('day_9.txt') as ifile:
             if n != "":
                 sequence.append(int(n))
         sequences.append(sequence)
-
-for s in sequences:
+result = 0
+for sequence in sequences:
     all_zeroes = False
+    extrapolated_values = []
     while not all_zeroes:
-        s, all_zeroes = generate_next_sequence(s)
-        print(s)
+        extrapolated_values.append(sequence)
+        result += sequence[- 1]
+        sequence, all_zeroes = generate_next_sequence(sequence)
+
+print(result)
