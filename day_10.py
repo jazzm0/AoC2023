@@ -80,13 +80,27 @@ def find_farthest_distance(map: List[str]) -> int:
                                  find_next_position(map, next_right, visited))
         one_route.append(next_left)
         another_route.append(next_right)
+    visited.add(next_right)
+    transformed_map = [["0"] * len(map[0]) for i in range(len(map))]
     for i in range(len(map)):
         for j in range(len(map[0])):
             if (i, j) in visited:
-                print('I', end="")
+                if (i, j) == start:
+                    transformed_map[i][j] = "-"
+                else:
+                    transformed_map[i][j] = map[i][j]
             else:
-                print('0', end="")
-        print()
+                transformed_map[i][j] = "0"
+    tile_counts = 0
+    pointing_north = {"|", "L", "J"}
+    for i in range(len(transformed_map)):
+        is_inside = False
+        for j in range(len(transformed_map[0])):
+            if transformed_map[i][j] in pointing_north:
+                is_inside = not is_inside
+            elif is_inside and transformed_map[i][j] == "0":
+                tile_counts += 1
+    print(tile_counts)
     return max(len(one_route), len(another_route)) + 1
 
 
