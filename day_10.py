@@ -72,8 +72,8 @@ def find_farthest_distance(map: List[str]) -> int:
                 start = (i, j)
                 break
     visited.add(start)
-    next_left, next_right = (find_next_position(map, (start[0], start[1] - 1), visited),
-                             find_next_position(map, (start[0], start[1] + 1), visited))
+    next_left, next_right = (find_next_position(map, (start[0], start[1] + 1), visited),
+                             find_next_position(map, (start[0], start[1] - 1), visited))
     one_route, another_route = [next_left], [next_right]
     while next_left != next_right:
         next_left, next_right = (find_next_position(map, next_left, visited),
