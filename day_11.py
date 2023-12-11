@@ -3,7 +3,7 @@ from typing import List
 
 
 def count_distances(map: List[str]) -> int:
-    empty_rows, empty_columns = [], []
+    empty_rows, empty_columns, galaxies = [], [], []
     for i in range(len(map)):
         is_row_empty = True
         for j in range(len(map[0])):
@@ -22,22 +22,25 @@ def count_distances(map: List[str]) -> int:
         if is_column_empty:
             empty_columns.append(j)
 
-    offset = 0
-    for row in empty_rows:
-        map.insert(row + offset, len(map[row]) * ".")
-        offset += 1
-
-    offset = 0
-    for column in empty_columns:
-        for r in range(len(map)):
-            map[r] = map[r][0:column + offset + 1] + "." + map[r][column + offset + 1:]
-        offset += 1
-
-    galaxies = []
     for i in range(len(map)):
         for j in range(len(map[0])):
             if map[i][j] == "#":
                 galaxies.append((i, j))
+
+    offset = 0
+    multiplier = 10 ** 6
+    for row in empty_rows:
+        for index in range(len(galaxies)):
+            if galaxies[index][0] > row + offset:
+                galaxies[index] = (galaxies[index][0] + 1, galaxies[index][1])
+        offset += 1
+
+    offset = 0
+    for column in empty_columns:
+        for index in range(len(galaxies)):
+            if galaxies[index][1] > column + offset:
+                galaxies[index] = (galaxies[index][0], galaxies[index][1] + 1)
+        offset += 1
 
     sum_min_distances = 0
 
