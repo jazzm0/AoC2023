@@ -28,19 +28,19 @@ def count_distances(map: List[str]) -> int:
                 galaxies.append((i, j))
 
     offset = 0
-    multiplier = 10 ** 6
+    multiplier = (10 ** 6) - 1
     for row in empty_rows:
         for index in range(len(galaxies)):
             if galaxies[index][0] > row + offset:
-                galaxies[index] = (galaxies[index][0] + 1, galaxies[index][1])
-        offset += 1
+                galaxies[index] = (galaxies[index][0] + multiplier, galaxies[index][1])
+        offset += multiplier
 
     offset = 0
     for column in empty_columns:
         for index in range(len(galaxies)):
             if galaxies[index][1] > column + offset:
-                galaxies[index] = (galaxies[index][0], galaxies[index][1] + 1)
-        offset += 1
+                galaxies[index] = (galaxies[index][0], galaxies[index][1] + multiplier)
+        offset += multiplier
 
     sum_min_distances = 0
 
@@ -66,4 +66,4 @@ class TestStringMethods(unittest.TestCase):
             for line in ifile:
                 map.append(line.strip())
 
-        self.assertEqual(374, count_distances(map))
+        self.assertEqual(82000210, count_distances(map))
