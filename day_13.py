@@ -3,7 +3,7 @@ from typing import List
 
 
 def check_pattern(pattern: List[str]) -> int:
-    m, n = len(pattern), len(pattern[0])
+    m = len(pattern)
     for i in range(m - 1):
         all_symmetric = True
         for k in range(0, i + 1):
