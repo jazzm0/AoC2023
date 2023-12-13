@@ -1,66 +1,95 @@
-import unittest
+import functools
 
 
-def shrink(record: str) -> str:
-    shrunk = False
-    while not shrunk:
-        shrunk = True
-        if record[0] == ".":
-            record = record[1:]
-            shrunk = False
-        if record[-1] == ".":
-            record = record[:-1]
-            shrunk = False
-    result = ""
-    for i in range(len(record)):
-        if (i == len(record) - 1) or not record[i] == record[i + 1] == ".":
-            result += record[i]
-    return result
+# could not solve :(
+# from https://www.reddit.com/r/adventofcode/comments/18hbbxe/2023_day_12python_stepbystep_tutorial_with_bonus/
 
+@functools.cache
+def get_number_of_arrangement(record: str, groups: tuple) -> int:
+    # Did we run out of groups? We might still be valid
+    if not groups:
 
-def get_number_of_arrangement(operational_days: int, group: str) -> int:
-    if len(group) == operational_days:
-        return 1
-    wildcard_counts = 1
-    for i in range(len(group)):
-        if group[i] == "?" and (i + operational_days < len(group)):
-            wildcard_counts += 1
+        # Make sure there aren't any more damaged springs, if so, we're valid
+        if "#" not in record:
+            # This will return true even if record is empty, which is valid
+            return 1
         else:
-            break
-    return wildcard_counts
+            # More damaged springs that aren't in the groups
+            return 0
+
+    # There are more groups, but no more record
+    if not record:
+        # We can't fit, exit
+        return 0
+
+    # Look at the next element in each record and group
+    next_character = record[0]
+    next_group = groups[0]
+
+    # Logic that treats the first character as pound-sign "#"
+    def pound():
+        # If the first is a pound, then the first n characters must be
+        # able to be treated as a pound, where n is the first group number
+        this_group = record[:next_group]
+        this_group = this_group.replace("?", "#")
+
+        # If the next group can't fit all the damaged springs, then abort
+        if this_group != next_group * "#":
+            return 0
+
+        # If the rest of the record is just the last group, then we're
+        # done and there's only one possibility
+        if len(record) == next_group:
+            # Make sure this is the last group
+            if len(groups) == 1:
+                # We are valid
+                return 1
+            else:
+                # There's more groups, we can't make it work
+                return 0
+
+        # Make sure the character that follows this group can be a seperator
+        if record[next_group] in "?.":
+            # It can be seperator, so skip it and reduce to the next group
+            return get_number_of_arrangement(record[next_group + 1:], groups[1:])
+
+        # Can't be handled, there are no possibilites
+        return 0
+
+    # Logic that treats the first character as dot "."
+    def dot():
+        return get_number_of_arrangement(record[1:], groups)
+
+    if next_character == '#':
+        # Test pound logic
+        out = pound()
+
+    elif next_character == '.':
+        # Test dot logic
+        out = dot()
+
+    elif next_character == '?':
+        # This character could be either character, so we'll explore both
+        # possibilities
+        out = dot() + pound()
+
+    else:
+        raise RuntimeError
+
+    # Help with debugging
+    print(record, groups, "->", out)
+    return out
 
 
 def count_all_arrangements(record: str) -> int:
     parts = record.split(" ")
-    operational_groups = shrink(parts[0]).split(".")
-    operational_days = [int(x) for x in parts[1].split(",")]
-    print(operational_groups, operational_days)
+    groups = tuple([int(x) for x in parts[1].split(",")])
+    return get_number_of_arrangement("?".join([parts[0].strip()] * 5), groups * 5)
 
 
+result = 0
 with open('day_12.txt') as ifile:
     for record in ifile:
-        count_all_arrangements(record.strip())
+        result += count_all_arrangements(record.strip())
 
-
-class TestStringMethods(unittest.TestCase):
-    def test_a(self):
-        self.assertEqual(3, get_number_of_arrangement(8, "??##???#???"))
-
-    def test_b(self):
-        self.assertEqual(4, get_number_of_arrangement(8, "???#???#???"))
-
-    def test_c(self):
-        self.assertEqual(4, get_number_of_arrangement(8, "???????????"))
-
-    def test_d(self):
-        self.assertEqual(4, count_arrangements("??.?.??##?##?? 1,1,8"))
-
-    def test_e(self):
-        self.assertEqual(4, count_arrangements("????.######..#####. 1,6,5"))
-
-    def test_f(self):
-        self.assertEqual(4, count_arrangements("??.#..????? 1,1,2"))
-
-
-def test_g(self):
-    self.assertEqual(10, count_all_arrangements("?###???????? 3,2,1"))
+print(result)
