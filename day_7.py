@@ -92,7 +92,7 @@ def get_new_kind(old_kind: str, hand: str) -> str:
 
 with open('day_7.txt') as ifile:
     for line in ifile:
-        parts = line.split(" ")
+        parts = line.split()
         hand = parts[0].strip()
         value = int(parts[1].strip())
         value_map[hand] = value

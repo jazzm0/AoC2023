@@ -16,7 +16,7 @@ sequences = []
 with open('day_9.txt') as ifile:
     for line in ifile:
         sequence = []
-        for n in line.strip().split(" "):
+        for n in line.strip().split():
             if n != "":
                 sequence.append(int(n))
         sequences.append(sequence)

@@ -61,7 +61,7 @@ dish = []
 
 with open('day_14.txt') as ifile:
     for line in ifile:
-        dish.append([c for c in line.strip()])
+        dish.append(list(line.strip()))
 
 print(tilt_dish_calc_load(dish))
 
@@ -79,8 +79,8 @@ class TestStringMethods(unittest.TestCase):
                  ".......O..",
                  "#....###..",
                  "#OO..#...."]
-        for i in input:
-            dish.append([c for c in i.strip()])
+        for line in input:
+            dish.append(list(line.strip()))
         self.assertEqual(64, tilt_dish_calc_load(dish))
 
     def test_b(self):
@@ -88,8 +88,8 @@ class TestStringMethods(unittest.TestCase):
         input = ["abc",
                  "def",
                  "ghi"]
-        for i in input:
-            dish.append([c for c in i.strip()])
+        for line in input:
+            dish.append(list(line.strip()))
         self.assertEqual(
             [['g', 'd', 'a'],
              ['h', 'e', 'b'],

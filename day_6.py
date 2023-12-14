@@ -5,12 +5,12 @@ total_time, total_distance = 0, 0
 
 
 def convert(s: str) -> List[int]:
-    return [int(x) for x in s.split(":")[1].split(" ") if x.strip() != ""]
+    return [int(x) for x in s.split(":")[1].split() if x.strip() != ""]
 
 
 def convert2(s: str) -> int:
     r = ""
-    for part in [x for x in s.split(":")[1].split(" ") if x.strip() != ""]:
+    for part in [x for x in s.split(":")[1].split() if x.strip() != ""]:
         r += part
     return int(r)
 

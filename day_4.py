@@ -8,10 +8,10 @@ def get_card_value(s: str) -> int:
     card_number = int(s[0].replace("Card", "").strip())
     numbers = s[1].split("|")
     winning_numbers, matches = set(), 0
-    for winning_number in numbers[0].split(" "):
+    for winning_number in numbers[0].split():
         if winning_number != "":
             winning_numbers.add(winning_number.strip())
-    for number in numbers[1].split(" "):
+    for number in numbers[1].split():
         if number.strip() in winning_numbers:
             matches += 1
     card_matches[card_number] = matches

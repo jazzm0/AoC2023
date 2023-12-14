@@ -82,7 +82,7 @@ def get_number_of_arrangement(record: str, groups: tuple) -> int:
 
 
 def count_all_arrangements(record: str) -> int:
-    parts = record.split(" ")
+    parts = record.split()
     groups = tuple([int(x) for x in parts[1].split(",")])
     return get_number_of_arrangement("?".join([parts[0].strip()] * 5), groups * 5)
 

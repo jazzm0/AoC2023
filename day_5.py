@@ -35,7 +35,7 @@ def binary_search(keys: List[int], value: int) -> int:
 def add_entry(s: str, map: dict, keys: List[int]):
     if not s[0].isdigit():
         return
-    boundaries = s.split(" ")
+    boundaries = s.split()
     source = int(boundaries[1])
     destination = int(boundaries[0])
     offset = int(boundaries[2]) - 1
@@ -64,7 +64,7 @@ def map_value(map: dict, keys: List[int], value: int) -> int:
 with open('day_5.txt') as ifile:
     for line in ifile:
         if line.find("seeds") >= 0:
-            for seed in line.split(":")[1].split(" "):
+            for seed in line.split(":")[1].split():
                 if seed != "":
                     seeds.append(int(seed.strip()))
         elif line.find("seed-to-soil") >= 0:
