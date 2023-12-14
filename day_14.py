@@ -2,7 +2,7 @@ import unittest
 from typing import List
 
 
-def tilt_column(dish: List[List[str]], column: int):
+def tilt(dish: List[List[str]], column: int):
     n = len(dish)
     start = 0
     while start < n:
@@ -21,17 +21,40 @@ def tilt_column(dish: List[List[str]], column: int):
         start += 1
 
 
-def tilt_dish_calc_load(dish: List[List[str]]) -> int:
-    for column in range(len(dish[0])):
-        tilt_column(dish, column)
+def rotate(dish: List[List[str]]) -> List[List[str]]:
+    n = len(dish)
+    result = [["0" for x in range(n)] for y in range(n)]
+    for i in range(n):
+        for j in range(n):
+            result[j][n - i - 1] = dish[i][j]
+    return result
+
+
+def calculate_load(dish: List[List[str]]) -> int:
+    n = len(dish)
     result = 0
-    for row in range(len(dish)):
+    for row in range(n):
         count = 0
-        for column in range(len(dish[0])):
+        for column in range(n):
             if dish[row][column] == "O":
                 count += 1
-        result += count * (len(dish) - row)
+        result += count * (n - row)
     return result
+
+
+def cycle(dish: List[List[str]]) -> List[List[str]]:
+    n = len(dish)
+    for _ in range(4):
+        for column in range(n):
+            tilt(dish, column)
+        dish = rotate(dish)
+    return dish
+
+
+def tilt_dish_calc_load(dish: List[List[str]]) -> int:
+    for _ in range(1000):
+        dish = cycle(dish)
+    return calculate_load(dish)
 
 
 dish = []
@@ -58,4 +81,16 @@ class TestStringMethods(unittest.TestCase):
                  "#OO..#...."]
         for i in input:
             dish.append([c for c in i.strip()])
-        self.assertEqual(136, tilt_dish_calc_load(dish))
+        self.assertEqual(64, tilt_dish_calc_load(dish))
+
+    def test_b(self):
+        dish = []
+        input = ["abc",
+                 "def",
+                 "ghi"]
+        for i in input:
+            dish.append([c for c in i.strip()])
+        self.assertEqual(
+            [['g', 'd', 'a'],
+             ['h', 'e', 'b'],
+             ['i', 'f', 'c']], rotate(dish))
