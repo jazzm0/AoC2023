@@ -42,11 +42,8 @@ def sum_focusing_power(sequence: str) -> int:
                 box[index] = (label, lens)
             else:
                 box.append((label, lens))
-        elif operation == "-":
-            if found:
-                del box[index]
-        else:
-            raise Exception('invalid operation')
+        elif operation == "-" and found:
+            del box[index]
 
         boxes[key] = box
 
