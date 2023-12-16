@@ -19,7 +19,7 @@ def get_left(tile: tuple) -> tuple:
 
 
 def get_right(tile: tuple, n: int) -> tuple:
-    if tile[1] < n + 1:
+    if tile[1] < n - 1:
         return tile[0], tile[1] + 1
     return ()
 
@@ -83,8 +83,7 @@ def get_next_tiles(tiles: List[str], current_tile: tuple, direction: tuple) -> L
 
 
 def count_energized_tiles(tiles: List[str]) -> int:
-    m, n = len(tiles), len((tiles[0]))
-    tiles_energized = {(0, 0): [get_right((0, 0), n)]}
+    tiles_energized = {(0, 0): get_next_tiles(tiles, (0, 0), (0, 1))}
     seen = set()
     done = False
     while not done:
@@ -98,15 +97,11 @@ def count_energized_tiles(tiles: List[str]) -> int:
                 if (start, direction) in seen:
                     continue
                 seen.add((start, direction))
-                for n in get_next_tiles(tiles, t, direction):
-                    if n == () or n in tiles_energized.keys():
-                        continue
-                    new_direction = (n[0] - t[0], n[1] - t[1])
-                    new_tiles_energized[n] = get_next_tiles(tiles, n, new_direction)
-                    done = False
+                new_tiles_energized[t] = get_next_tiles(tiles, t, direction)
+                done = False
         tiles_energized = new_tiles_energized
 
-    return 0
+    return len(tiles_energized)
 
 
 class TestStringMethods(unittest.TestCase):
@@ -123,7 +118,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual([(0, 6)], get_next_tiles(parse_tiles("day_16_small.txt"), (0, 5), down))
 
     def test_e(self):
-        self.assertEqual([], get_next_tiles(parse_tiles("day_16_small.txt"), (9, 5), down))
+        self.assertEqual([()], get_next_tiles(parse_tiles("day_16_small.txt"), (9, 5), down))
 
     def test_h(self):
-        self.assertEqual(46, count_energized_tiles(parse_tiles("day_16_small.txt")))
+        self.assertEqual(7623, count_energized_tiles(parse_tiles("day_16.txt")))
