@@ -13,27 +13,19 @@ def parse_tiles(f: str) -> List[str]:
 
 
 def get_left(tile: tuple) -> tuple:
-    if tile[1] > 0:
-        return tile[0], tile[1] - 1
-    return ()
+    return tile[0], tile[1] - 1 if tile[1] > 0 else ()
 
 
 def get_right(tile: tuple, n: int) -> tuple:
-    if tile[1] < n - 1:
-        return tile[0], tile[1] + 1
-    return ()
+    return tile[0], tile[1] + 1 if tile[1] < n - 1 else ()
 
 
 def get_up(tile: tuple) -> tuple:
-    if tile[0] > 0:
-        return tile[0] - 1, tile[1]
-    return ()
+    return tile[0] - 1, tile[1] if tile[0] > 0 else ()
 
 
 def get_down(tile: tuple, m) -> tuple:
-    if tile[0] < m - 1:
-        return tile[0] + 1, tile[1]
-    return ()
+    return tile[0] + 1, tile[1] if tile[0] < m - 1 else ()
 
 
 def get_next_tiles(tiles: List[str], current_tile: tuple, direction: tuple) -> List[tuple]:
