@@ -1,3 +1,4 @@
+import sys
 from typing import List
 
 from PIL import Image, ImageDraw
@@ -47,7 +48,7 @@ def dig(instructions: List[tuple]):
         im.putpixel(xy=(plan[i][0] + abs(min_x), plan[i][1] + abs(min_y)), value=(255, 255, 255))
 
     ImageDraw.floodfill(im, (150, 150), value=(255, 255, 255))
-    im.save("map.png")
+    # im.save("map.png")
     result = 0
     for pixel in im.getdata():
         if pixel == (255, 255, 255):
@@ -56,7 +57,28 @@ def dig(instructions: List[tuple]):
     return result
 
 
+def dig2(instructions: List[tuple]):
+    position = (0, 0)
+    plan = [position]
+    instruction_count = 0
+    for instruction in instructions:
+        direction = instruction[0]
+        steps = instruction[1]
+        sys.stdout.write("progress: %d %%   \r" % ((instruction_count / len(instructions)) * 100))
+        sys.stdout.flush()
+        for i in range(steps):
+            position = (position[0] + direction[0], position[1] + direction[1])
+            plan.append(position)
+        instruction_count += 1
+
+    points_inside = 0
+    for i in range(len(plan) - 1):
+        points_inside += plan[i][0] * plan[i + 1][1] - plan[i][1] * plan[i + 1][0]
+
+    return len(plan) // 2 - (points_inside // 2) + 1
+
+
 instructions = parse_instructions("day_18.txt")
 print(dig(instructions))
-# instructions = parse_instructions_new("day_18_small.txt")
-# print(dig(instructions))
+instructions = parse_instructions_new("day_18.txt")
+print(dig2(instructions))
