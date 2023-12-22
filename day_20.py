@@ -1,3 +1,6 @@
+from math import lcm
+
+
 def parse_configuration(f: str) -> (dict, dict, dict, dict):
     flip_flops, conjunctions, inputs, outputs, states = set(), set(), {}, {}, {}
     with open(f) as ifile:
@@ -27,9 +30,12 @@ def parse_configuration(f: str) -> (dict, dict, dict, dict):
     return flip_flops, conjunctions, inputs, outputs, states
 
 
-def process(flip_flops: set, conjunctions: set, inputs: dict, outputs: dict, states: dict, counts: dict):
+def process(flip_flops: set, conjunctions: set, inputs: dict, outputs: dict, states: dict, counts: dict, presses: int,
+            final_conjunctions: dict):
     pulses = []
+    presses += 1
     counts["low"] += 1
+
     for module in outputs["broadcaster"]:
         pulses.append(("broadcaster", module, 0))
 
@@ -50,6 +56,8 @@ def process(flip_flops: set, conjunctions: set, inputs: dict, outputs: dict, sta
                         new_pulses.append((dst, next_module, new_signal))
             elif dst in conjunctions:
                 inputs[dst][src] = signal
+                if dst == "dt" and signal == 1 and src not in final_conjunctions:
+                    final_conjunctions[src] = presses
                 states[dst] = signal
                 new_signal = 0
                 for state in inputs[dst].values():
@@ -62,11 +70,21 @@ def process(flip_flops: set, conjunctions: set, inputs: dict, outputs: dict, sta
                 states[dst] = signal
         pulses = new_pulses
 
+    return presses
+
 
 flip_flops, conjunctions, inputs, outputs, states = parse_configuration("day_20.txt")
 counts = {"high": 0, "low": 0}
+final_conjunctions = {}
 
-for _ in range(1000):
-    process(flip_flops, conjunctions, inputs, outputs, states, counts)
+for press in range(1000):
+    process(flip_flops, conjunctions, inputs, outputs, states, counts, press, final_conjunctions)
 
 print(counts["low"] * counts["high"])
+
+press = 0
+flip_flops, conjunctions, inputs, outputs, states = parse_configuration("day_20.txt")
+while len(final_conjunctions) != 4:
+    press = process(flip_flops, conjunctions, inputs, outputs, states, counts, press, final_conjunctions)
+
+print(lcm(*final_conjunctions.values()))
