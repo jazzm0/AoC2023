@@ -9,16 +9,20 @@ def get_map(f: str) -> List[str]:
     return map
 
 
+def index(current_index: int, boundary: int) -> int:
+    return current_index % boundary
+
+
 def get_next_plots(map: List[str], m: int, n: int, plots: set[tuple]) -> set[tuple]:
     next_plots = set()
     for plot in plots:
-        if plot[0] > 0 and map[plot[0] - 1][plot[1]] != "#":
+        if map[index(plot[0] - 1, m)][index(plot[1], n)] != "#":
             next_plots.add((plot[0] - 1, plot[1]))
-        if plot[0] < m - 1 and map[plot[0] + 1][plot[1]] != "#":
+        if map[index(plot[0] + 1, m)][index(plot[1], n)] != "#":
             next_plots.add((plot[0] + 1, plot[1]))
-        if plot[1] > 0 and map[plot[0]][plot[1] - 1] != "#":
+        if map[index(plot[0], m)][index(plot[1] - 1, n)] != "#":
             next_plots.add((plot[0], plot[1] - 1))
-        if plot[1] < n - 1 and map[plot[0]][plot[1] + 1] != "#":
+        if map[index(plot[0], m)][index(plot[1] + 1, n)] != "#":
             next_plots.add((plot[0], plot[1] + 1))
 
     return next_plots
@@ -42,4 +46,4 @@ def count_plots(map: List[str], steps: int) -> int:
     return len(plots)
 
 
-print(count_plots(get_map("day_21.txt"), 64))
+print(count_plots(get_map("day_21_small.txt"), 500))
