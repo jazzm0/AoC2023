@@ -48,22 +48,18 @@ def get_longest_path(map: List[str]) -> int:
         if map[0][i] == ".":
             start = (0, i)
             break
-    finished = False
+
     next_positions = get_next_positions(map, start, seen)
     seen[start] = next_positions
-    while not finished:
-        finished = True
+    while len(next_positions) != 0:
         new_next_positions = set()
         for position in next_positions:
-            next_positions_from_actual = get_next_positions(map, position, seen)
             if position in seen:
                 continue
+            next_positions_from_actual = get_next_positions(map, position, seen)
             seen[position] = next_positions_from_actual
             for p in next_positions_from_actual:
                 new_next_positions.add(p)
-
-            if len(next_positions) != 0 and finished:
-                finished = False
         next_positions = new_next_positions
 
     longest = 0
@@ -74,15 +70,15 @@ def get_longest_path(map: List[str]) -> int:
         finished = True
         last = None
         steps = 0
-        next = seen[actual]
-        while len(next) != 0:
+        next_position = seen[actual]
+        while len(next_position) != 0:
             steps += 1
-            if len(next) > 1:
+            if len(next_position) > 1:
                 finished = False
                 last = actual
-            actual = next[0]
+            actual = next_position[0]
             path.append(actual)
-            next = seen[actual]
+            next_position = seen[actual]
         longest = max(longest, steps)
         if last is not None:
             del seen[last][0]
