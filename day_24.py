@@ -58,4 +58,18 @@ def get_collisions(paths: List[tuple], limit: tuple):
     return count
 
 
-print(get_collisions(get_paths("day_24.txt"), (2 * 10 ** 14, 4 * 10 ** 14)))
+paths = get_paths("day_24.txt")
+
+print(get_collisions(paths, (2 * 10 ** 14, 4 * 10 ** 14)))
+
+# line_a = Line(point=[0, 0, 0], direction=[1, 1, 1])
+# line_b = Line(point=[1, 1, 0], direction=[-1, -1, 1])
+#
+# point_intersection = line_a.intersect_line(line_b)
+#
+#
+# plot_3d(
+#     line_a.plotter(),
+#     line_b.plotter(),
+#     point_intersection.plotter(c='k', s=75),
+# )
