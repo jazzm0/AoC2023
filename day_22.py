@@ -45,9 +45,6 @@ def get_bricks(f: str) -> List[tuple]:
     return bricks
 
 
-bricks = get_bricks("day_22.txt")
-
-
 class TestStringMethods(unittest.TestCase):
     def test_a(self):
         self.assertEqual(False, intersect_2d((1, 1), (10, 1), (1, 2), (10, 2)))
@@ -57,3 +54,9 @@ class TestStringMethods(unittest.TestCase):
 
     def test_c(self):
         self.assertEqual(False, intersect_2d((-5, -5), (0, 0), (1, 1), (10, 10)))
+
+    def test_d(self):
+        self.assertEqual(True, intersect_2d((1, 0), (1, 2), (0, 0), (2, 0)))
+
+    def test_e(self):
+        self.assertEqual(False, intersect_2d((0, 0), (2, 0), (0, 2), (2, 2)))
